@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+env/
+
+# Environment Variables
+.env
+.env.local
+
+# CiteMind Data & Vector Stores
+backend/data/uploads/
+backend/data/vector_store/
+*.faiss
+*.pkl
