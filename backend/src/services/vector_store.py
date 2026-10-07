@@ -178,9 +178,7 @@ class FaissVectorStore:
         print(f"[VectorStore] Successfully loaded {self.size} vectors from {target_dir.resolve()}")
 
 
-# ─────────────────────────────────────────────
-# Global Vector Store Instance (Lazy Loader)
-# ─────────────────────────────────────────────
+
 _vector_store_instance: "FaissVectorStore | None" = None
 
 
