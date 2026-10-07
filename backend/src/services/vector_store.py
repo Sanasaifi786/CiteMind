@@ -178,5 +178,30 @@ class FaissVectorStore:
         print(f"[VectorStore] Successfully loaded {self.size} vectors from {target_dir.resolve()}")
 
 
+# ─────────────────────────────────────────────
+# Global Vector Store Instance (Lazy Loader)
+# ─────────────────────────────────────────────
+_vector_store_instance: "FaissVectorStore | None" = None
+
+
+def get_vector_store(storage_dir: str | Path = "data/vector_store") -> FaissVectorStore:
+    """
+    Returns the shared global instance of FaissVectorStore.
+    If an existing index is saved on disk, it loads it automatically.
+    """
+    global _vector_store_instance
+    if _vector_store_instance is None:
+        target_path = Path(storage_dir)
+        store = FaissVectorStore()
+        if (target_path / "index.faiss").exists() and (target_path / "metadata.pkl").exists():
+            try:
+                store.load(target_path)
+            except Exception as e:
+                print(f"[VectorStore] Warning: Could not load saved index: {e}")
+        _vector_store_instance = store
+    return _vector_store_instance
+
+
 if __name__ == "__main__":
     print("Vector Store service loaded successfully.")
+
