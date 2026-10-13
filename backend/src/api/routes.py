@@ -17,6 +17,7 @@ from services.chunker import chunk_document_pages
 from services.embedder import get_embedding_service
 from services.vector_store import get_vector_store
 from services.llm import get_llm_service
+from services.rag_pipeline import RAGPipeline, RAGResponse
 
 router = APIRouter()
 
@@ -26,9 +27,7 @@ UPLOAD_DIR = BACKEND_DIR / "data" / "uploads"
 VECTOR_STORE_DIR = BACKEND_DIR / "data" / "vector_store"
 
 
-# ─────────────────────────────────────────────
 # Pydantic Response Schemas
-# ─────────────────────────────────────────────
 
 class HealthResponse(BaseModel):
     """System health and diagnostic status."""
@@ -48,9 +47,7 @@ class UploadResponse(BaseModel):
     message: str = Field(..., description="Human-readable success message")
 
 
-# ─────────────────────────────────────────────
 # Endpoint 1: Health & Diagnostics
-# ─────────────────────────────────────────────
 
 @router.get("/health", response_model=HealthResponse, tags=["Diagnostics"])
 def health_check():
@@ -70,9 +67,7 @@ def health_check():
     )
 
 
-# ─────────────────────────────────────────────
 # Endpoint 2: Document Upload & Ingestion
-# ─────────────────────────────────────────────
 
 @router.post("/upload", response_model=UploadResponse, status_code=status.HTTP_201_CREATED, tags=["Ingestion"])
 async def upload_document(file: UploadFile = File(...)):
@@ -155,3 +150,64 @@ async def upload_document(file: UploadFile = File(...)):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error processing PDF '{file.filename}': {str(e)}"
         )
+
+
+# Endpoint 3: Question Answering (RAG)
+
+class AskRequest(BaseModel):
+    """Input payload for academic question answering."""
+    question: str = Field(
+        ...,
+        min_length=2,
+        max_length=1000,
+        description="The student's natural language question",
+        examples=["What is virtual memory and how does paging work?"]
+    )
+    top_k: int = Field(
+        default=3,
+        ge=1,
+        le=10,
+        description="Maximum relevant context chunks to retrieve"
+    )
+    min_score: float = Field(
+        default=0.35,
+        ge=0.0,
+        le=1.0,
+        description="Minimum cosine similarity threshold to reject noise"
+    )
+
+
+@router.post("/ask", response_model=RAGResponse, tags=["Question Answering"])
+def ask_question(request: AskRequest):
+    """
+    Ask a question against all indexed academic documents.
+
+    Pipeline execution:
+      1. Validates that the index is not empty.
+      2. Embeds the user question into 384 dimensions.
+      3. Performs FAISS similarity search.
+      4. Discards noise below `min_score` (protects against hallucinations).
+      5. Constructs a strictly grounded system prompt.
+      6. Queries the LLM (Groq Llama 3.3).
+      7. Returns the answer with structured page citations and latency telemetry.
+    """
+    vstore = get_vector_store(VECTOR_STORE_DIR)
+
+    if vstore.size == 0:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="No documents have been indexed yet. Please upload an academic PDF via /api/upload first."
+        )
+
+    rag = RAGPipeline(
+        vector_store=vstore,
+        default_min_score=request.min_score,
+        default_top_k=request.top_k
+    )
+
+    return rag.ask(
+        query=request.question,
+        top_k=request.top_k,
+        min_score=request.min_score
+    )
+
