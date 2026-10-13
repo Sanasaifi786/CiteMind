@@ -9,6 +9,7 @@ This module exposes the FastAPI endpoints, starting with:
 from pathlib import Path
 import shutil
 import time
+from typing import List
 from fastapi import APIRouter, File, HTTPException, UploadFile, status
 from pydantic import BaseModel, Field
 
@@ -210,4 +211,65 @@ def ask_question(request: AskRequest):
         top_k=request.top_k,
         min_score=request.min_score
     )
+
+
+# Endpoint 4: Document Library & Stats
+
+class DocumentInfo(BaseModel):
+    """Metadata summary of an indexed academic document."""
+    filename: str = Field(..., description="Document file name")
+    total_pages: int = Field(..., description="Distinct page count")
+    total_chunks: int = Field(..., description="Indexed chunk count")
+    file_size_kb: float = Field(..., description="File size on disk in kilobytes")
+
+
+class DocumentLibraryResponse(BaseModel):
+    """Overview of all documents currently indexed in the system."""
+    total_documents: int = Field(..., description="Total unique documents")
+    total_vectors: int = Field(..., description="Total vector chunks in FAISS")
+    documents: List[DocumentInfo] = Field(default_factory=list, description="List of document summaries")
+
+
+@router.get("/documents", response_model=DocumentLibraryResponse, tags=["Document Library"])
+def list_documents():
+    """
+    Returns a library overview of all uploaded and indexed academic documents.
+    Used by the frontend sidebar to display indexed notes and page counts.
+    """
+    vstore = get_vector_store(VECTOR_STORE_DIR)
+
+    # Aggregate chunks by source document
+    doc_map = {}
+    for chunk in vstore.metadata:
+        src = chunk.source
+        if src not in doc_map:
+            doc_map[src] = {
+                "pages": set(),
+                "chunk_count": 0
+            }
+        doc_map[src]["pages"].add(chunk.page_number)
+        doc_map[src]["chunk_count"] += 1
+
+    docs_list: List[DocumentInfo] = []
+    for filename, info in doc_map.items():
+        file_path = UPLOAD_DIR / filename
+        size_kb = 0.0
+        if file_path.exists():
+            size_kb = round(file_path.stat().st_size / 1024.0, 2)
+
+        docs_list.append(
+            DocumentInfo(
+                filename=filename,
+                total_pages=len(info["pages"]),
+                total_chunks=info["chunk_count"],
+                file_size_kb=size_kb
+            )
+        )
+
+    return DocumentLibraryResponse(
+        total_documents=len(docs_list),
+        total_vectors=vstore.size,
+        documents=docs_list
+    )
+
 
