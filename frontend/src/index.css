@@ -1,0 +1,128 @@
+/* ==========================================================================
+   CiteMind Design System & Global Styles
+   Typography: Newsreader (Editorial Serif) + Plus Jakarta Sans (UI Sans)
+   ========================================================================== */
+
+:root {
+  /* ---------------- Color Tokens ---------------- */
+  /* Canvas & Backgrounds */
+  --bg-canvas: #FAF7F2;          /* Warm scholarly cream base */
+  --bg-surface: #FFFFFF;         /* Crisp white card surface */
+  --bg-surface-subtle: #F4EFE6;  /* Soft secondary container */
+  --bg-dark: #121826;            /* Deep midnight obsidian */
+  --bg-dark-card: #182032;       /* Elevated dark container */
+
+  /* Text & Ink */
+  --text-primary: #141A24;       /* Primary heading / high-contrast ink */
+  --text-secondary: #525968;     /* Body text / editorial paragraphs */
+  --text-muted: #828A99;         /* Captions, timestamps, badges */
+  --text-inverse: #FFFFFF;       /* Crisp white on dark sections */
+  --text-inverse-muted: #9BA3B5; /* Muted text on dark sections */
+
+  /* Accent & Highlight Colors */
+  --accent-gold: #D9822B;        /* CiteMind signature warm amber */
+  --accent-gold-light: #FEF3C7;  /* Soft golden pill backgrounds */
+  --accent-gold-border: #FCD34D; /* Golden badge borders */
+  --accent-gold-text: #92400E;   /* Readable gold text on light gold */
+  --accent-highlight: #FDE68A;   /* Text marker highlight color */
+
+  /* Semantic Feedback */
+  --color-success: #059669;      /* Green for verified citations & checkmarks */
+  --color-success-bg: #ECFDF5;
+  --color-danger: #DC2626;       /* Red for 'Without CiteMind' bullet points */
+  --color-danger-bg: #FEF2F2;
+
+  /* Borders & Dividers */
+  --border-light: #EBE5DB;       /* Subtle warm border on cards */
+  --border-subtle: #DFD7CA;
+  --border-dark: #232D42;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(18, 24, 38, 0.05);
+  --shadow-md: 0 4px 12px rgba(18, 24, 38, 0.07);
+  --shadow-lg: 0 12px 32px rgba(18, 24, 38, 0.09);
+  --shadow-glow: 0 12px 40px rgba(217, 130, 43, 0.18);
+
+  /* ---------------- Typography ---------------- */
+  --font-serif: 'Newsreader', Georgia, serif;
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', Consolas, monospace;
+
+  /* Spacing Scale */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 9999px;
+
+  /* Layout Containers */
+  --container-max-width: 1200px;
+  --container-padding: 24px;
+}
+
+/* Base Reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-canvas);
+  color: var(--text-secondary);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* Headings inherit the editorial serif */
+h1, h2, h3, h4 {
+  font-family: var(--font-serif);
+  color: var(--text-primary);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+button {
+  font-family: var(--font-sans);
+  cursor: pointer;
+  border: none;
+  background: none;
+  outline: none;
+}
+
+/* Shared Container Utility */
+.citemind-container {
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding: 0 var(--container-padding);
+  width: 100%;
+}
+
+/* Subtle marker highlight effect */
+.highlight-mark {
+  background-color: var(--accent-highlight);
+  padding: 1px 4px;
+  border-radius: 3px;
+  color: #78350F;
+  font-weight: 500;
+}
