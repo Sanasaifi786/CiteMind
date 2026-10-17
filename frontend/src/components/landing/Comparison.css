@@ -1,0 +1,128 @@
+/* ==========================================================================
+   Comparison Section Styles
+   ========================================================================== */
+
+.comparison-section {
+  padding: 104px 0 112px;
+  background-color: var(--bg-canvas);
+}
+
+.comparison-header {
+  max-width: 680px;
+  margin-bottom: 56px;
+}
+
+.comparison-tracker {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  color: #245953;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 14px;
+}
+
+.comparison-title {
+  font-size: 2.625rem;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+/* 2-Column Comparison Layout */
+.comparison-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 28px;
+}
+
+.comparison-card {
+  border-radius: 20px;
+  padding: 36px 32px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Without Card Theme */
+.without-card {
+  background-color: #FAF2EB;
+  border: 1px solid #F1E2D4;
+}
+
+.without-tag {
+  color: #C2410C;
+}
+
+/* With Card Theme */
+.with-card {
+  background-color: #EDF7F4;
+  border: 1px solid #D7EBE4;
+}
+
+.with-tag {
+  color: #0F766E;
+}
+
+.comparison-card-tag {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  margin-bottom: 28px;
+}
+
+/* List Items */
+.comparison-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.comparison-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 0.96875rem;
+  font-weight: 500;
+  color: #2D3748;
+  line-height: 1.5;
+}
+
+.point-icon-box {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.without-icon {
+  background-color: #FEE2E2;
+  color: #DC2626;
+}
+
+.with-icon {
+  background-color: #CCFBF1;
+  color: #0D9488;
+}
+
+/* Responsive adjustments */
+@media (max-width: 840px) {
+  .comparison-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .comparison-title {
+    font-size: 2.15rem;
+  }
+
+  .comparison-card {
+    padding: 28px 24px;
+  }
+}
