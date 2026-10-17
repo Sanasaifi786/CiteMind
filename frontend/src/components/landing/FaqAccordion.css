@@ -1,0 +1,128 @@
+/* ==========================================================================
+   FAQ Accordion Styles
+   ========================================================================== */
+
+.faq-section {
+  padding: 104px 0 112px;
+  background-color: var(--bg-canvas);
+}
+
+.faq-header {
+  text-align: center;
+  max-width: 640px;
+  margin: 0 auto 56px;
+}
+
+.faq-tracker {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  color: #245953;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 14px;
+}
+
+.faq-title {
+  font-size: 2.625rem;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+/* Accordion Stack Container */
+.faq-stack {
+  max-width: 780px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.faq-item {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: 14px;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.faq-item:hover {
+  border-color: var(--border-subtle);
+}
+
+.faq-question-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22px 24px;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+  gap: 16px;
+}
+
+.faq-question-text {
+  font-family: var(--font-sans);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.35;
+}
+
+.faq-icon-box {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s ease;
+  flex-shrink: 0;
+}
+
+.faq-icon-box.rotated {
+  transform: rotate(45deg);
+  color: var(--accent-gold);
+}
+
+/* Expandable Drawer Animation */
+.faq-answer-collapse {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+}
+
+.faq-answer-collapse.expanded {
+  max-height: 240px;
+  opacity: 1;
+}
+
+.faq-answer-inner {
+  padding: 0 24px 22px 24px;
+}
+
+.faq-answer-inner p {
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+
+@media (max-width: 640px) {
+  .faq-title {
+    font-size: 2.15rem;
+  }
+
+  .faq-question-btn {
+    padding: 18px 20px;
+  }
+
+  .faq-question-text {
+    font-size: 0.96875rem;
+  }
+}

@@ -1,0 +1,99 @@
+/* ==========================================================================
+   Closing CTA Banner Styles
+   ========================================================================== */
+
+.cta-banner-section {
+  padding: 64px 0 104px;
+  background-color: var(--bg-canvas);
+}
+
+.cta-banner-card {
+  position: relative;
+  background-color: var(--bg-dark);
+  border-radius: var(--radius-xl);
+  padding: 84px 32px;
+  text-align: center;
+  overflow: hidden;
+  box-shadow: 0 24px 48px -12px rgba(18, 24, 38, 0.2);
+}
+
+.cta-glow-aura {
+  position: absolute;
+  top: -50%;
+  left: 50%;
+  width: 80%;
+  height: 100%;
+  transform: translateX(-50%);
+  background: radial-gradient(
+    ellipse,
+    rgba(217, 130, 43, 0.16) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+.cta-card-content {
+  position: relative;
+  z-index: 2;
+  max-width: 600px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.cta-title {
+  font-family: var(--font-serif);
+  font-size: 3.125rem;
+  line-height: 1.12;
+  letter-spacing: -0.025em;
+  font-weight: 500;
+  color: #FFFFFF;
+  margin-bottom: 18px;
+}
+
+.cta-subtitle {
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: var(--text-inverse-muted);
+  margin-bottom: 36px;
+}
+
+.btn-cta-gold {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background-color: var(--accent-gold);
+  color: #121826;
+  font-weight: 700;
+  font-size: 0.96875rem;
+  padding: 13px 28px;
+  border-radius: var(--radius-pill);
+  box-shadow: 0 4px 14px rgba(217, 130, 43, 0.3);
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-cta-gold:hover {
+  background-color: #E5A020;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(217, 130, 43, 0.4);
+}
+
+.btn-cta-gold .cta-arrow {
+  transition: transform 0.2s ease;
+}
+
+.btn-cta-gold:hover .cta-arrow {
+  transform: translateX(3px);
+}
+
+@media (max-width: 640px) {
+  .cta-banner-card {
+    padding: 60px 24px;
+    border-radius: 18px;
+  }
+
+  .cta-title {
+    font-size: 2.25rem;
+  }
+}
