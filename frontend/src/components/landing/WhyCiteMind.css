@@ -1,0 +1,107 @@
+/* ==========================================================================
+   Why CiteMind Section Styles
+   ========================================================================== */
+
+.why-section {
+  padding: 96px 0 104px;
+  background-color: var(--bg-canvas);
+}
+
+.why-header {
+  max-width: 680px;
+  margin-bottom: 56px;
+}
+
+.section-tracker {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  color: #245953; /* Scholarly teal tracker */
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 14px;
+}
+
+.why-title {
+  font-size: 2.625rem;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+}
+
+.why-subtitle {
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+
+/* 3-Card Grid */
+.why-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+}
+
+.why-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: 18px;
+  padding: 32px 28px;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 6px rgba(18, 24, 38, 0.02);
+}
+
+.why-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--border-subtle);
+  box-shadow: 0 16px 32px -4px rgba(18, 24, 38, 0.07);
+}
+
+.why-card-icon-wrapper {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background-color: var(--accent-gold-light);
+  border: 1px solid var(--accent-gold-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.why-card-icon {
+  color: var(--accent-gold-text);
+}
+
+.why-card-title {
+  font-family: var(--font-sans);
+  font-size: 1.1875rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+}
+
+.why-card-description {
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+/* Responsive Grid Adjustments */
+@media (max-width: 960px) {
+  .why-cards-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .why-title {
+    font-size: 2.15rem;
+  }
+}

@@ -1,0 +1,117 @@
+/* ==========================================================================
+   How It Works Dark Section Styles
+   ========================================================================== */
+
+.how-section {
+  background-color: var(--bg-dark);
+  color: var(--text-inverse);
+  padding: 108px 0 120px;
+  position: relative;
+  overflow: hidden;
+}
+
+.how-header {
+  max-width: 640px;
+  margin-bottom: 64px;
+}
+
+.how-tracker {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--accent-gold);
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 14px;
+}
+
+.how-title {
+  font-size: 2.75rem;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  font-weight: 500;
+  color: #FFFFFF;
+}
+
+/* 4-Step Columns */
+.how-steps-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 36px;
+}
+
+.how-step-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.how-number-wrapper {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 24px;
+}
+
+.how-step-number {
+  font-family: var(--font-serif);
+  font-size: 3.5rem;
+  line-height: 1;
+  font-weight: 400;
+  color: var(--accent-gold);
+  letter-spacing: -0.03em;
+  margin-bottom: 18px;
+}
+
+.how-step-line {
+  height: 1px;
+  width: 100%;
+  background-color: var(--border-dark);
+  transition: background-color 0.2s ease;
+}
+
+.how-step-card:hover .how-step-line {
+  background-color: var(--accent-gold);
+}
+
+.how-step-title {
+  font-family: var(--font-sans);
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #FFFFFF;
+  margin-bottom: 12px;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+}
+
+.how-step-description {
+  font-size: 0.90625rem;
+  line-height: 1.65;
+  color: var(--text-inverse-muted);
+}
+
+/* Responsive Grid */
+@media (max-width: 1024px) {
+  .how-steps-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 40px;
+  }
+
+  .how-title {
+    font-size: 2.25rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .how-section {
+    padding: 72px 0 84px;
+  }
+
+  .how-steps-grid {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+
+  .how-step-number {
+    font-size: 2.75rem;
+  }
+}

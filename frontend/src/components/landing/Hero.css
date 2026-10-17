@@ -1,0 +1,427 @@
+/* ==========================================================================
+   Hero Section & Interactive Mockup Styles
+   ========================================================================== */
+
+.hero-section {
+  position: relative;
+  padding: 64px 0 84px;
+  overflow: hidden;
+}
+
+.hero-container {
+  display: grid;
+  grid-template-columns: 1.15fr 0.95fr;
+  gap: 56px;
+  align-items: center;
+}
+
+/* ---------------- Left Content Column ---------------- */
+.hero-content {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Badge Pill */
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--accent-gold-light);
+  border: 1px solid var(--accent-gold-border);
+  color: var(--accent-gold-text);
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  font-size: 0.84375rem;
+  font-weight: 600;
+  width: fit-content;
+  margin-bottom: 24px;
+  letter-spacing: -0.01em;
+}
+
+.badge-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: var(--accent-gold);
+  display: inline-block;
+}
+
+/* Headline */
+.hero-title {
+  font-size: 3.75rem;
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+}
+
+.hero-title-accent {
+  color: #245953; /* Scholarly deep teal highlight */
+}
+
+/* Subtitle Description */
+.hero-description {
+  font-size: 1.125rem;
+  line-height: 1.65;
+  color: var(--text-secondary);
+  margin-bottom: 32px;
+  max-width: 530px;
+}
+
+/* CTA Group */
+.hero-cta-group {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.btn-hero-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background-color: var(--bg-dark);
+  color: #FFFFFF;
+  padding: 13px 26px;
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+  font-size: 0.96875rem;
+  box-shadow: 0 4px 14px rgba(18, 24, 38, 0.16);
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-hero-primary:hover {
+  background-color: #242E44;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(18, 24, 38, 0.22);
+}
+
+.btn-hero-primary .btn-arrow {
+  transition: transform 0.2s ease;
+}
+
+.btn-hero-primary:hover .btn-arrow {
+  transform: translateX(3px);
+}
+
+.btn-hero-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-surface);
+  color: var(--text-primary);
+  border: 1px solid var(--border-subtle);
+  padding: 13px 24px;
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+  font-size: 0.96875rem;
+  transition: all 0.2s ease;
+}
+
+.btn-hero-secondary:hover {
+  border-color: var(--text-primary);
+  background-color: #FAF8F5;
+  transform: translateY(-1px);
+}
+
+/* Trust List */
+.hero-trust-list {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 36px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(223, 215, 202, 0.6);
+}
+
+.trust-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.84375rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.trust-check-icon {
+  color: var(--color-success);
+  flex-shrink: 0;
+}
+
+/* ---------------- Right Mockup Column ---------------- */
+.hero-visual {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hero-mockup-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+}
+
+/* Golden Halo Glow Backdrop */
+.mockup-glow-aura {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 108%;
+  height: 106%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(
+    circle,
+    rgba(235, 178, 80, 0.32) 0%,
+    rgba(245, 158, 11, 0.12) 50%,
+    transparent 75%
+  );
+  filter: blur(36px);
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Main Mockup Container Card */
+.hero-mockup-card {
+  position: relative;
+  z-index: 2;
+  background-color: var(--bg-surface);
+  border: 1px solid #EBE4D8;
+  border-radius: 20px;
+  padding: 22px;
+  box-shadow:
+    0 20px 48px -8px rgba(18, 24, 38, 0.1),
+    0 4px 12px rgba(18, 24, 38, 0.04);
+}
+
+/* Header inside Mockup */
+.mockup-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #F1EBE1;
+  margin-bottom: 18px;
+}
+
+.mockup-folder {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 0.90625rem;
+}
+
+.folder-icon {
+  color: var(--accent-gold);
+}
+
+.badge-docs-ready {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  background-color: #E8F5E9;
+  color: #2E7D32;
+  border-radius: var(--radius-pill);
+}
+
+/* Chat thread */
+.mockup-chat-thread {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* User Bubble */
+.mockup-user-bubble {
+  align-self: flex-end;
+  background-color: var(--bg-dark);
+  color: #FFFFFF;
+  padding: 10px 16px;
+  border-radius: 16px 16px 4px 16px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  max-width: 86%;
+  box-shadow: 0 2px 6px rgba(18, 24, 38, 0.15);
+}
+
+/* AI Answer Bubble */
+.mockup-ai-response {
+  align-self: flex-start;
+  background-color: #FAF8F5;
+  border: 1px solid #EEE9DF;
+  border-radius: 16px;
+  padding: 16px;
+  width: 100%;
+}
+
+.ai-text {
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: #28303F;
+  margin-bottom: 14px;
+}
+
+/* Citation Pill Buttons */
+.ai-citations-list {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.citation-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  background-color: #FEF3C7;
+  border: 1px solid #FCD34D;
+  border-radius: 6px;
+  font-size: 0.775rem;
+  font-weight: 600;
+  color: #92400E;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.citation-pill:hover {
+  background-color: #FDE68A;
+  transform: translateY(-1px);
+}
+
+.citation-pill.active {
+  background-color: #FBBF24;
+  border-color: #D97706;
+  color: #78350F;
+  box-shadow: 0 2px 6px rgba(217, 119, 6, 0.25);
+}
+
+.citation-icon {
+  color: #B45309;
+}
+
+/* Source Excerpt Card */
+.mockup-source-excerpt {
+  background-color: #FFFFFF;
+  border: 1px solid #EBE4D8;
+  border-radius: 12px;
+  padding: 12px 14px;
+  box-shadow: 0 2px 6px rgba(18, 24, 38, 0.03);
+}
+
+.source-meta {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #717A8C;
+  margin-bottom: 6px;
+}
+
+.source-content {
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: #374151;
+}
+
+.source-mark {
+  background-color: #FDE68A;
+  color: #78350F;
+  padding: 1px 4px;
+  border-radius: 3px;
+  font-weight: 500;
+}
+
+/* Input Bar */
+.mockup-input-bar {
+  display: flex;
+  align-items: center;
+  background-color: #FAF8F5;
+  border: 1px solid #EAE3D5;
+  border-radius: var(--radius-pill);
+  padding: 6px 8px 6px 16px;
+  margin-top: 16px;
+}
+
+.mockup-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-family: var(--font-sans);
+  font-size: 0.84375rem;
+  color: var(--text-primary);
+  outline: none;
+}
+
+.mockup-input::placeholder {
+  color: var(--text-muted);
+}
+
+.mockup-send-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: var(--bg-dark);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.mockup-send-btn:hover {
+  background-color: #242E44;
+  transform: scale(1.05);
+}
+
+/* ---------------- Responsive Styles ---------------- */
+@media (max-width: 1024px) {
+  .hero-container {
+    grid-template-columns: 1fr;
+    gap: 48px;
+    text-align: center;
+  }
+
+  .hero-content {
+    align-items: center;
+  }
+
+  .hero-title {
+    font-size: 3rem;
+  }
+
+  .hero-description {
+    max-width: 100%;
+  }
+
+  .hero-cta-group {
+    justify-content: center;
+  }
+
+  .hero-trust-list {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero-section {
+    padding: 40px 0 60px;
+  }
+
+  .hero-title {
+    font-size: 2.35rem;
+  }
+
+  .hero-mockup-card {
+    padding: 16px;
+  }
+
+  .hero-trust-list {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+}
