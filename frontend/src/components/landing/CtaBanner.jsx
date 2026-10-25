@@ -10,7 +10,7 @@ import './CtaBanner.css';
  * - Deep navy container with radial ambient glow.
  * - High-contrast golden call-to-action button directing users to onboarding.
  */
-export default function CtaBanner() {
+export default function CtaBanner({ onOpenSignup }) {
   return (
     <section className="cta-banner-section">
       <div className="citemind-container">
@@ -24,10 +24,14 @@ export default function CtaBanner() {
             <p className="cta-subtitle">
               Upload a PDF, ask a question, and see the page your answer came from.
             </p>
-            <a href="#signup" className="btn-cta-gold">
+            <button 
+              type="button" 
+              onClick={onOpenSignup} 
+              className="btn-cta-gold"
+            >
               <span>Get started</span>
               <ArrowRight size={18} className="cta-arrow" />
-            </a>
+            </button>
           </div>
         </div>
 
