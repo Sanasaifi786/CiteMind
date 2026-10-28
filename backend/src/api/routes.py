@@ -9,8 +9,9 @@ This module exposes the FastAPI endpoints, starting with:
 from pathlib import Path
 import shutil
 import time
-from typing import List
+from typing import List, Optional
 from fastapi import APIRouter, File, HTTPException, UploadFile, status
+from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 
 from services.extractor import extract_text_from_pdf
@@ -19,6 +20,7 @@ from services.embedder import get_embedding_service
 from services.vector_store import get_vector_store
 from services.llm import get_llm_service
 from services.rag_pipeline import RAGPipeline, RAGResponse
+from services.history_db import get_history_db
 
 router = APIRouter()
 
@@ -165,16 +167,24 @@ class AskRequest(BaseModel):
         examples=["What is virtual memory and how does paging work?"]
     )
     top_k: int = Field(
-        default=3,
+        default=5,
         ge=1,
-        le=10,
+        le=12,
         description="Maximum relevant context chunks to retrieve"
     )
     min_score: float = Field(
-        default=0.35,
+        default=0.22,
         ge=0.0,
         le=1.0,
         description="Minimum cosine similarity threshold to reject noise"
+    )
+    session_id: Optional[str] = Field(
+        default=None,
+        description="Active chat session ID to save messages into"
+    )
+    document_name: Optional[str] = Field(
+        default=None,
+        description="Target document to scope question to, or None for all documents"
     )
 
 
@@ -189,8 +199,9 @@ def ask_question(request: AskRequest):
       3. Performs FAISS similarity search.
       4. Discards noise below `min_score` (protects against hallucinations).
       5. Constructs a strictly grounded system prompt.
-      6. Queries the LLM (Groq Llama 3.3).
+      6. Queries the LLM (Groq Llama / open-weights).
       7. Returns the answer with structured page citations and latency telemetry.
+      8. Automatically records question and answer into persistent SQLite chat history.
     """
     vstore = get_vector_store(VECTOR_STORE_DIR)
 
@@ -200,17 +211,54 @@ def ask_question(request: AskRequest):
             detail="No documents have been indexed yet. Please upload an academic PDF via /api/upload first."
         )
 
+    history_db = get_history_db()
+    active_session_id = request.session_id
+    if not active_session_id or not history_db.get_session(active_session_id):
+        # Auto-create session titled with the question
+        title_snippet = request.question.strip()
+        if len(title_snippet) > 42:
+            title_snippet = title_snippet[:39] + "..."
+        sub = request.document_name or "General"
+        sess = history_db.create_session(
+            title=title_snippet,
+            subject=sub,
+            document_name=request.document_name
+        )
+        active_session_id = sess["id"]
+
+    # Record user question in persistent SQLite
+    history_db.add_message(
+        session_id=active_session_id,
+        sender="user",
+        text=request.question
+    )
+
     rag = RAGPipeline(
         vector_store=vstore,
         default_min_score=request.min_score,
         default_top_k=request.top_k
     )
 
-    return rag.ask(
+    rag_response = rag.ask(
         query=request.question,
         top_k=request.top_k,
-        min_score=request.min_score
+        min_score=request.min_score,
+        document_name=request.document_name
     )
+    rag_response.session_id = active_session_id
+
+    # Record AI answer & verified citations in persistent SQLite
+    history_db.add_message(
+        session_id=active_session_id,
+        sender="ai",
+        text=rag_response.answer,
+        has_sufficient_context=rag_response.has_sufficient_context,
+        citations=[c.model_dump() for c in rag_response.citations],
+        total_time_ms=rag_response.total_time_ms
+    )
+
+    return rag_response
+
 
 
 # Endpoint 4: Document Library & Stats
@@ -271,5 +319,121 @@ def list_documents():
         total_vectors=vstore.size,
         documents=docs_list
     )
+
+
+@router.get("/documents/{filename}/file", tags=["Document Library"])
+def get_document_file(filename: str):
+    """
+    Streams the raw PDF file directly to the browser for interactive viewing
+    in the Source Panel, supporting native browser PDF features like #page=X.
+    """
+    file_path = UPLOAD_DIR / filename
+    if not file_path.exists():
+        # Fallback to sample_docs if file is a seed document
+        sample_path = BACKEND_DIR / "sample_docs" / filename
+        if sample_path.exists():
+            file_path = sample_path
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Document file '{filename}' not found."
+            )
+
+    return FileResponse(
+        path=str(file_path),
+        media_type="application/pdf",
+        filename=filename,
+        headers={"Content-Disposition": f'inline; filename="{filename}"'}
+    )
+
+
+@router.delete("/documents/{filename}", tags=["Document Library"])
+def delete_document(filename: str):
+    """
+    Deletes an uploaded document from disk and purges its vector embeddings
+    from the FAISS index so it is no longer retrieved in answers.
+    """
+    vstore = get_vector_store(VECTOR_STORE_DIR)
+    
+    # 1. Remove physical file from UPLOAD_DIR if it exists
+    file_path = UPLOAD_DIR / filename
+    if file_path.exists():
+        try:
+            file_path.unlink()
+        except Exception as e:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Could not delete physical file: {e}"
+            )
+
+    # 2. Filter out deleted document from vector store metadata
+    remaining_chunks = [c for c in vstore.metadata if c.source != filename]
+    
+    if len(remaining_chunks) != len(vstore.metadata):
+        if len(remaining_chunks) == 0:
+            vstore.reset()
+        else:
+            embedder = get_embedding_service()
+            new_embeddings = embedder.embed_chunks(remaining_chunks)
+            vstore.reset()
+            vstore.add(remaining_chunks, new_embeddings)
+        vstore.save(VECTOR_STORE_DIR)
+
+    return {
+        "message": f"Document '{filename}' successfully deleted and removed from vector store.",
+        "remaining_vectors": vstore.size
+    }
+
+
+# Endpoint 5: Chat History & Session Management
+
+class CreateSessionRequest(BaseModel):
+    title: str = Field(..., min_length=1, max_length=100)
+    subject: str = Field(default="General")
+    document_name: Optional[str] = Field(default=None)
+
+
+@router.get("/history", tags=["Chat History"])
+def get_chat_history(document: Optional[str] = None):
+    """Returns chat sessions, optionally filtered by document_name."""
+    history_db = get_history_db()
+    if document:
+        sessions = history_db.get_sessions_by_document(document)
+    else:
+        sessions = history_db.get_all_sessions()
+    return {"sessions": sessions, "total_sessions": len(sessions)}
+
+
+@router.get("/history/{session_id}", tags=["Chat History"])
+def get_session_details(session_id: str):
+    """Returns metadata and full chronological message thread for a session."""
+    history_db = get_history_db()
+    session = history_db.get_session(session_id)
+    if not session:
+        raise HTTPException(status_code=404, detail=f"Session '{session_id}' not found.")
+    messages = history_db.get_session_messages(session_id)
+    return {
+        "session": session,
+        "messages": messages
+    }
+
+
+@router.post("/history/session", tags=["Chat History"])
+def create_chat_session(payload: CreateSessionRequest):
+    """Creates a new empty chat session."""
+    history_db = get_history_db()
+    session = history_db.create_session(title=payload.title, subject=payload.subject)
+    return session
+
+
+@router.delete("/history/{session_id}", tags=["Chat History"])
+def delete_chat_session(session_id: str):
+    """Deletes a chat session and all its messages."""
+    history_db = get_history_db()
+    success = history_db.delete_session(session_id)
+    if not success:
+        raise HTTPException(status_code=404, detail=f"Session '{session_id}' not found.")
+    return {"message": f"Session '{session_id}' successfully deleted."}
+
 
 
