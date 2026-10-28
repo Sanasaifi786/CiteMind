@@ -21,7 +21,7 @@ class LLMService:
     def __init__(
         self,
         api_key: Optional[str] = None,
-        default_model: str = "llama-3.3-70b-versatile"
+        default_model: Optional[str] = None
     ):
         """
         Initializes the Groq client.
@@ -31,7 +31,7 @@ class LLMService:
             default_model: Default open-weights model to use.
         """
         self.api_key = api_key or os.getenv("GROQ_API_KEY")
-        self.default_model = default_model
+        self.default_model = default_model or os.getenv("DEFAULT_LLM_MODEL", "openai/gpt-oss-120b")
         self.client = None
 
         if self.api_key and self.api_key != "your_groq_api_key_here":
@@ -76,7 +76,14 @@ class LLMService:
         Returns:
             str: Generated text answer.
         """
-        active_model = model or self.default_model
+        candidate_models = [
+            model or self.default_model,
+            "openai/gpt-oss-120b",
+            "openai/gpt-oss-20b",
+            "qwen/qwen3.8-27b"
+        ]
+        # Remove duplicates while preserving order
+        candidate_models = list(dict.fromkeys(candidate_models))
 
         if not self.is_configured:
             # Helpful fallback for students who haven't pasted their key yet
@@ -84,7 +91,7 @@ class LLMService:
                 "[!] [CiteMind Mock LLM Response]:\n"
                 "To enable real AI answers, please create a free API key at "
                 "https://console.groq.com and paste it in `backend/.env` as `GROQ_API_KEY=gsk_...`\n\n"
-                f"Generated Prompt would have used model '{active_model}' with temperature {temperature}."
+                f"Generated Prompt would have used model '{candidate_models[0]}' with temperature {temperature}."
             )
 
         messages = []
@@ -92,14 +99,23 @@ class LLMService:
             messages.append({"role": "system", "content": system_prompt})
         messages.append({"role": "user", "content": prompt})
 
-        response = self.client.chat.completions.create(
-            model=active_model,
-            messages=messages,
-            temperature=temperature,
-            max_tokens=1024
-        )
+        last_error = None
+        for candidate in candidate_models:
+            try:
+                response = self.client.chat.completions.create(
+                    model=candidate,
+                    messages=messages,
+                    temperature=temperature,
+                    max_tokens=1024
+                )
+                return response.choices[0].message.content
+            except Exception as e:
+                last_error = e
+                print(f"[LLMService] Attempt with model '{candidate}' failed: {e}. Trying fallback...")
+                continue
 
-        return response.choices[0].message.content
+        raise RuntimeError(f"All candidate models failed on Groq API. Last error: {last_error}")
+
 
 
 # ─────────────────────────────────────────────
