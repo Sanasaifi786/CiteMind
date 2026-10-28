@@ -1,0 +1,329 @@
+/* ==========================================================================
+   Source Panel (Right Split Inspector) Styles
+   ========================================================================== */
+
+.source-panel-container {
+  width: 360px;
+  min-width: 360px;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  background-color: #FFFFFF;
+  border-left: 1px solid #EAE3D5;
+  display: flex;
+  flex-direction: column;
+  padding: 28px 24px;
+  overflow-y: auto;
+  user-select: none;
+  box-shadow: -4px 0 20px rgba(18, 24, 38, 0.03);
+}
+
+/* Header */
+.source-panel-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.source-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.source-panel-title {
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.source-mode-toggle {
+  display: flex;
+  background-color: #FAF8F5;
+  border: 1px solid #EBE4D8;
+  border-radius: var(--radius-pill);
+  padding: 2px;
+  gap: 2px;
+}
+
+.mode-btn {
+  background: none;
+  border: none;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.mode-btn.active {
+  background-color: #141E33;
+  color: #FFFFFF;
+}
+
+.btn-source-close {
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: var(--radius-sm);
+  transition: color 0.15s ease;
+}
+
+.btn-source-close:hover {
+  color: var(--text-primary);
+}
+
+/* Doc Meta */
+.source-doc-meta {
+  margin-bottom: 18px;
+}
+
+.source-doc-title {
+  font-family: var(--font-sans);
+  font-size: 0.96875rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 3px;
+  line-height: 1.35;
+}
+
+.source-doc-sub {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+
+/* Page Navigation */
+.source-page-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #FAF8F5;
+  border: 1px solid #EBE4D8;
+  border-radius: var(--radius-pill);
+  padding: 6px 12px;
+  margin-bottom: 20px;
+}
+
+.page-nav-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-primary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px;
+  border-radius: 50%;
+  transition: background-color 0.15s ease;
+}
+
+.page-nav-arrow:hover:not(:disabled) {
+  background-color: #EDE7DC;
+}
+
+.page-nav-arrow:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.page-indicator {
+  font-size: 0.84375rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* Academic Page Sheet Card */
+.source-sheet-card {
+  background-color: #FAF8F5;
+  border: 1px solid #EAE3D5;
+  border-radius: 14px;
+  padding: 22px 18px;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 6px rgba(18, 24, 38, 0.02);
+}
+
+.sheet-heading {
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 14px;
+}
+
+.sheet-skeleton-group {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.skeleton-line {
+  height: 6px;
+  background-color: #E6DFD3;
+  border-radius: 3px;
+}
+
+.skeleton-line.full {
+  width: 100%;
+}
+
+.skeleton-line.medium {
+  width: 78%;
+}
+
+.skeleton-line.long {
+  width: 92%;
+}
+
+.skeleton-line.short {
+  width: 45%;
+}
+
+/* Golden Highlight Box */
+.sheet-highlight-box {
+  background-color: #FEF08A;
+  border: 1px solid #FDE047;
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin: 14px 0;
+  box-shadow: 0 1px 3px rgba(202, 138, 4, 0.12);
+}
+
+.sheet-highlight-text {
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: #78350F;
+  font-weight: 500;
+}
+
+/* Secondary Citations */
+.source-secondary-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.secondary-label {
+  font-size: 0.71875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.secondary-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.secondary-cite-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #FFFFFF;
+  border: 1px solid #EBE4D8;
+  border-radius: 10px;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  width: 100%;
+}
+
+.secondary-cite-item:hover {
+  border-color: #141E33;
+  background-color: #FAF8F5;
+}
+
+.secondary-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.secondary-icon {
+  color: #D97706;
+}
+
+.secondary-arrow {
+  color: var(--text-muted);
+}
+
+/* PDF Frame Streamer */
+.source-pdf-frame-wrapper {
+  height: 380px;
+  min-height: 380px;
+  background-color: #FAF8F5;
+  border: 1px solid #EAE3D5;
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 8px rgba(18, 24, 38, 0.03);
+}
+
+.source-pdf-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.source-pdf-placeholder {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: var(--text-muted);
+  font-size: 0.8125rem;
+}
+
+.placeholder-icon {
+  color: #D9822B;
+}
+
+/* Footer Button */
+.source-panel-footer {
+  margin-top: auto;
+  padding-top: 14px;
+}
+
+.btn-open-full-doc {
+  width: 100%;
+  background: transparent;
+  border: 1px solid #141E33;
+  color: #141E33;
+  padding: 11px 16px;
+  border-radius: var(--radius-pill);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.btn-open-full-doc:hover {
+  background-color: #141E33;
+  color: #FFFFFF;
+}
+
+@media (max-width: 1200px) {
+  .source-panel-container {
+    width: 320px;
+    min-width: 320px;
+  }
+}
