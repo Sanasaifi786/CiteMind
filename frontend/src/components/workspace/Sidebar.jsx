@@ -27,6 +27,10 @@ export default function Sidebar({
   onSelectSubject,
   onOpenUploadModal,
   onNewSubject,
+  recentChats,
+  activeChatId,
+  onSelectChat,
+  onNewChat,
   user,
   onLogout
 }) {
@@ -92,42 +96,81 @@ export default function Sidebar({
         </button>
       </nav>
 
-      {/* Subjects Category Section */}
-      <div className="sidebar-subjects-section">
-        <div className="subjects-header">
-          <span className="subjects-label">SUBJECTS</span>
-        </div>
+      {/* Subjects Category Section OR Recent Chats Section */}
+      {activeNav === 'ask' ? (
+        <div className="sidebar-subjects-section">
+          <div className="subjects-header">
+            <span className="subjects-label">RECENT CHATS</span>
+            {onNewChat && (
+              <button
+                type="button"
+                className="btn-new-chat-action"
+                onClick={onNewChat}
+                title="Start a new chat thread"
+              >
+                <Plus size={13} strokeWidth={2.5} />
+                <span>New</span>
+              </button>
+            )}
+          </div>
 
-        <div className="subjects-list">
-          {subjects.map((sub) => (
-            <button
-              key={sub.name}
-              type="button"
-              className={`subject-item-btn ${activeSubject === sub.name ? 'active' : ''}`}
-              onClick={() => onSelectSubject && onSelectSubject(sub.name)}
-            >
-              <div className="subject-item-left">
-                <span 
-                  className="subject-color-dot" 
-                  style={{ backgroundColor: sub.color }} 
-                />
-                <span className="subject-name">{sub.name}</span>
+          <div className="subjects-list">
+            {recentChats && recentChats.length > 0 ? (
+              recentChats.map((chat) => (
+                <button
+                  key={chat.id}
+                  type="button"
+                  className={`recent-chat-btn ${activeChatId === chat.id ? 'active' : ''}`}
+                  onClick={() => onSelectChat && onSelectChat(chat.id)}
+                  title={chat.title}
+                >
+                  <span>{chat.title}</span>
+                </button>
+              ))
+            ) : (
+              <div style={{ padding: '12px 14px', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                No saved questions yet.
               </div>
-              <span className="subject-count">{sub.count}</span>
-            </button>
-          ))}
+            )}
+          </div>
         </div>
+      ) : (
+        <div className="sidebar-subjects-section">
+          <div className="subjects-header">
+            <span className="subjects-label">SUBJECTS</span>
+          </div>
 
-        {/* "+ New subject" Button */}
-        <button 
-          type="button" 
-          className="btn-new-subject"
-          onClick={onNewSubject}
-        >
-          <Plus size={15} strokeWidth={2.2} />
-          <span>New subject</span>
-        </button>
-      </div>
+          <div className="subjects-list">
+            {subjects.map((sub) => (
+              <button
+                key={sub.name}
+                type="button"
+                className={`subject-item-btn ${activeSubject === sub.name ? 'active' : ''}`}
+                onClick={() => onSelectSubject && onSelectSubject(sub.name)}
+              >
+                <div className="subject-item-left">
+                  <span 
+                    className="subject-color-dot" 
+                    style={{ backgroundColor: sub.color }} 
+                  />
+                  <span className="subject-name">{sub.name}</span>
+                </div>
+                <span className="subject-count">{sub.count}</span>
+              </button>
+            ))}
+          </div>
+
+          {/* "+ New subject" Button */}
+          <button 
+            type="button" 
+            className="btn-new-subject"
+            onClick={onNewSubject}
+          >
+            <Plus size={15} strokeWidth={2.2} />
+            <span>New subject</span>
+          </button>
+        </div>
+      )}
 
       {/* Bottom User Identity Card */}
       <div className="sidebar-user-footer">
