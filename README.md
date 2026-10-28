@@ -112,3 +112,23 @@ How to write a prompt that forces an LLM to say "I don't know" instead of making
 These five things are exactly what get probed in AI engineering interviews — so treat explaining them cleanly (in your README and out loud) as part of the deliverable, not an afterthought.
 
 backend run command = uvicorn main:app --reload
+
+Backend endpoints to build: 
+POST	/auth/signup	Create account	No
+POST	/auth/login	Login, return JWT	No
+POST	/auth/refresh	Refresh access token	Refresh token
+GET	/auth/me	Current user profile	Yes
+POST	/documents/upload	Upload a PDF, kicks off extraction/chunking/embedding	Yes
+GET	/documents	List user's documents (with status)	Yes
+GET	/documents/{doc_id}	Document metadata (pages, upload date, status)	Yes
+GET	/documents/{doc_id}/status	Poll processing status (extracting/chunking/embedding/ready)	Yes
+DELETE	/documents/{doc_id}	Delete a document + its vectors	Yes
+POST	/folders	Create a subject/folder	Yes
+GET	/folders	List folders	Yes
+PUT	/folders/{folder_id}	Rename/move folder	Yes
+DELETE	/folders/{folder_id}	Delete folder	Yes
+POST	/chat/sessions	Start a new chat session (optionally scoped to a doc/folder)	Yes
+GET	/chat/sessions	List past sessions	Yes
+GET	/chat/sessions/{session_id}/messages	Get message history for a session	Yes
+POST	/chat/ask	Core RAG endpoint — question in, grounded answer + citations out	Yes
+DELETE	/chat/sessions/{session_id}	Delete a session

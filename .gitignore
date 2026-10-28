@@ -12,5 +12,14 @@ env/
 # CiteMind Data & Vector Stores
 backend/data/uploads/
 backend/data/vector_store/
+data/
 *.faiss
 *.pkl
+backend/data/*.db
+
+# Node / Frontend
+node_modules/
+frontend/node_modules/
+frontend/dist/
+dist/
+.DS_Store
