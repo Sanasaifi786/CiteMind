@@ -63,26 +63,12 @@ class RetrievalEngine:
     def retrieve(
         self,
         query: str,
-        top_k: int = 3,
-        min_score: Optional[float] = None
+        top_k: int = 5,
+        min_score: Optional[float] = None,
+        document_name: Optional[str] = None
     ) -> RetrievalResponse:
         """
-        Executes semantic retrieval for a user question.
-
-        Pipeline:
-          1. Clean & validate query.
-          2. Embed query text into 384-dimensional dense vector.
-          3. Query FAISS index for nearest neighbors.
-          4. Filter out chunks falling below similarity threshold (reject noise).
-          5. Assemble prompt-ready context with page citations.
-
-        Args:
-            query: The user's question or search phrase.
-            top_k: Maximum number of chunks to retrieve (default: 3).
-            min_score: Minimum cosine similarity threshold (overrides default).
-
-        Returns:
-            RetrievalResponse: Structured retrieval results.
+        Executes semantic retrieval for a user question with optional document scoping.
         """
         start_time = time.perf_counter()
         threshold = min_score if min_score is not None else self.default_min_score
@@ -108,15 +94,18 @@ class RetrievalEngine:
                 retrieval_time_ms=0.0
             )
 
-        # 1. Embed query
+        # 1. Embed query into vector
         query_vector = self.embedding_service.embed_text(cleaned_query)
 
-        # 2. Search FAISS index
-        raw_results = self.vector_store.search(query_vector, top_k=top_k)
+        # 2. Search FAISS index with wider candidate pool to allow document filtering
+        candidate_k = max(top_k * 4, 16) if document_name else max(top_k * 2, 8)
+        raw_results = self.vector_store.search(query_vector, top_k=candidate_k)
 
-        # 3. Filter by similarity threshold & package
+        # 3. Filter by document (if scoped) and similarity threshold
         retrieved_chunks: List[RetrievedChunk] = []
         for chunk, score in raw_results:
+            if document_name and chunk.source != document_name:
+                continue
             if score >= threshold:
                 citation_label = f"{chunk.source} (Page {chunk.page_number})"
                 retrieved_chunks.append(
@@ -129,6 +118,26 @@ class RetrievalEngine:
                         citation=citation_label
                     )
                 )
+                if len(retrieved_chunks) >= top_k:
+                    break
+
+        # Fallback: if document scoping with strict threshold yielded 0, retry with relaxed threshold
+        if document_name and len(retrieved_chunks) == 0:
+            relaxed_thresh = 0.15
+            for chunk, score in raw_results:
+                if chunk.source == document_name and score >= relaxed_thresh:
+                    retrieved_chunks.append(
+                        RetrievedChunk(
+                            chunk_id=chunk.chunk_id,
+                            source=chunk.source,
+                            page_number=chunk.page_number,
+                            content=chunk.content,
+                            score=round(score, 4),
+                            citation=f"{chunk.source} (Page {chunk.page_number})"
+                        )
+                    )
+                    if len(retrieved_chunks) >= top_k:
+                        break
 
         # 4. Build formatted context for LLM prompt
         formatted_context = self._format_context_for_prompt(retrieved_chunks)

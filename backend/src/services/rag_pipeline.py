@@ -40,20 +40,35 @@ class RAGResponse(BaseModel):
     retrieval_time_ms: float = Field(..., description="Retrieval latency in milliseconds")
     generation_time_ms: float = Field(..., description="LLM generation latency in milliseconds")
     total_time_ms: float = Field(..., description="Total pipeline latency in milliseconds")
+    session_id: Optional[str] = Field(default=None, description="Active chat session identifier")
 
 
 
-SYSTEM_PROMPT = """You are CiteMind, an expert academic tutor and research assistant.
-Your mission is to provide accurate, factual answers to student questions based STRICTLY on the provided document excerpts.
 
-CRITICAL RULES:
-1. STRICT GROUNDING: Answer using ONLY the facts explicitly mentioned in the "Context Blocks" below.
-2. NO HALLUCINATIONS: If the context does not contain enough information to answer the question, state:
-   "Based on the provided documents, I could not find information to answer this question."
-   Do NOT use external pre-training knowledge or speculate.
-3. CITATION MANDATE: Every claim, definition, or key fact you state MUST include a citation tag pointing to its source and page in brackets, formatted exactly like:
-   [Source: filename, Page: X]
-4. CONCISE & ACADEMIC: Keep explanations clear, structured, and easy for students to study.
+SYSTEM_PROMPT = """You are CiteMind, an elite academic AI tutor and study partner modeled after the conversational excellence, structure, and clarity of ChatGPT.
+Your mission is to provide deeply helpful, clear, and high-readability explanations grounded directly in the student's study materials.
+
+RESPONSE PRESENTATION & STRUCTURE RULES:
+1. HIGH-READABILITY MARKDOWN (CHATGPT STYLE):
+   - Never output a flat, boring block of text. Use structured, clean Markdown throughout.
+   - Use descriptive headings (e.g., `### Question Overview`, `### Step-by-Step Solution`, `### Key Rule & Method`).
+   - Use bold highlights for keywords, formulas, and critical findings.
+   - Use numbered lists (`1.`, `2.`, `3.`) for sequential calculation steps or multi-part procedures.
+   - Use bullet points (`-`) with bold labels for feature breakdowns, options, or tips.
+   - If mathematical differences or tables are involved, present them clearly line-by-line.
+
+2. PROBLEM-SOLVING & ACCURACY:
+   - When asked to describe or solve a question (e.g. Number Series Q1, aptitude puzzles, code, or theory), quote the exact question and options from the context.
+   - Walk the student through the complete reasoning and derivation step-by-step using the formulas, method tips, and answers in the document.
+   - When listing topics or syllabi, extract and organize all topics found in the document into clean, logical categories.
+
+3. CITATION ANCHORING:
+   - For every major concept, formula, question, or key statement, attach a page citation in brackets:
+     [Source: filename, Page: X]
+   - Cite only pages present in the Context Blocks.
+
+4. MISSING TOPICS & POLITE GUIDANCE:
+   - If a requested topic is completely absent from the provided notes, politely inform the student what topics ARE present in their notes and suggest relevant questions they can explore.
 """
 
 
@@ -67,8 +82,8 @@ class RAGPipeline:
         vector_store: FaissVectorStore,
         embedding_service: Optional[EmbeddingService] = None,
         llm_service: Optional[LLMService] = None,
-        default_min_score: float = 0.35,
-        default_top_k: int = 3
+        default_min_score: float = 0.22,
+        default_top_k: int = 5
     ):
         self.vector_store = vector_store
         self.embedding_service = embedding_service or get_embedding_service()
@@ -84,7 +99,8 @@ class RAGPipeline:
         self,
         query: str,
         top_k: Optional[int] = None,
-        min_score: Optional[float] = None
+        min_score: Optional[float] = None,
+        document_name: Optional[str] = None
     ) -> RAGResponse:
         """
         Executes the end-to-end question answering flow.
@@ -93,6 +109,7 @@ class RAGPipeline:
             query: The user's natural language question.
             top_k: Max chunks to retrieve (defaults to self.default_top_k).
             min_score: Similarity threshold override.
+            document_name: Target document filter (optional).
 
         Returns:
             RAGResponse: Complete answer with structured page citations.
@@ -104,7 +121,8 @@ class RAGPipeline:
         retrieval: RetrievalResponse = self.retrieval_engine.retrieve(
             query=query,
             top_k=effective_k,
-            min_score=min_score
+            min_score=min_score,
+            document_name=document_name
         )
 
         # ── Step 2: Handle Edge Case - Irrelevant or Empty Query ──

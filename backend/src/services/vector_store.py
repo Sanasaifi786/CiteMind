@@ -177,6 +177,12 @@ class FaissVectorStore:
 
         print(f"[VectorStore] Successfully loaded {self.size} vectors from {target_dir.resolve()}")
 
+    def reset(self) -> None:
+        """Clears the FAISS index and resets metadata list."""
+        self.index = faiss.IndexFlatIP(self.dimension)
+        self.metadata = []
+
+
 
 
 _vector_store_instance: "FaissVectorStore | None" = None
