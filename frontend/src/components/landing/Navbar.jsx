@@ -11,7 +11,7 @@ import './Navbar.css';
  * - Responsive mobile drawer toggle.
  * - Auth action buttons (Log in & Get started).
  */
-export default function Navbar() {
+export default function Navbar({ onOpenLogin, onOpenSignup }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -46,8 +46,20 @@ export default function Navbar() {
 
         {/* Right Auth Action Buttons */}
         <div className="navbar-actions desktop-only">
-          <a href="#login" className="btn-login">Log in</a>
-          <a href="#signup" className="btn-get-started">Get started</a>
+          <button 
+            type="button" 
+            onClick={onOpenLogin} 
+            className="btn-login"
+          >
+            Log in
+          </button>
+          <button 
+            type="button" 
+            onClick={onOpenSignup} 
+            className="btn-get-started"
+          >
+            Get started
+          </button>
         </div>
 
         {/* Mobile Hamburger Button */}
@@ -69,8 +81,20 @@ export default function Navbar() {
           <a href="#features" onClick={() => setIsMobileMenuOpen(false)}>Features</a>
           <a href="#faq" onClick={() => setIsMobileMenuOpen(false)}>FAQ</a>
           <div className="mobile-drawer-actions">
-            <a href="#login" className="btn-login" onClick={() => setIsMobileMenuOpen(false)}>Log in</a>
-            <a href="#signup" className="btn-get-started" onClick={() => setIsMobileMenuOpen(false)}>Get started</a>
+            <button 
+              type="button" 
+              className="btn-login" 
+              onClick={() => { setIsMobileMenuOpen(false); if (onOpenLogin) onOpenLogin(); }}
+            >
+              Log in
+            </button>
+            <button 
+              type="button" 
+              className="btn-get-started" 
+              onClick={() => { setIsMobileMenuOpen(false); if (onOpenSignup) onOpenSignup(); }}
+            >
+              Get started
+            </button>
           </div>
         </div>
       )}

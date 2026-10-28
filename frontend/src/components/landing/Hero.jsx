@@ -13,7 +13,7 @@ import './Hero.css';
  * - Social trust bullets using scalable vector icons.
  * - Interactive Mockup preview demonstrating the product value.
  */
-export default function Hero() {
+export default function Hero({ onOpenSignup }) {
   return (
     <section className="hero-section">
       <div className="citemind-container hero-container">
@@ -39,10 +39,14 @@ export default function Hero() {
 
           {/* Call-to-action Action Buttons */}
           <div className="hero-cta-group">
-            <a href="#signup" className="btn-hero-primary">
+            <button 
+              type="button" 
+              onClick={onOpenSignup} 
+              className="btn-hero-primary"
+            >
               <span>Get started</span>
               <ArrowRight size={18} className="btn-arrow" />
-            </a>
+            </button>
             <a href="#how-it-works" className="btn-hero-secondary">
               See how it works
             </a>
